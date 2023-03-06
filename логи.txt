@@ -1,0 +1,124 @@
+
+1) Создать двух пользователей (с помощью метода User.objects.create_user('username')).
+
+    from app.models import User
+    user1 = User.objects.create_user('user1')
+    user2 = User.objects.create_user('user2')
+    user3 = User.objects.create_user('user3')
+    user4 = User.objects.create_user('user4')
+
+2) Создать два объекта модели Author, связанные с пользователями.
+
+    from app.models import Aythor
+    aut1 = Author.objects.create(user=user1)
+    aut2 = Author.objects.create(user=user2)
+
+3) Добавить 4 категории в модель Category.
+
+    from app.models import Category
+    cat_news = Category.objects.create(category_name='News')
+    cat_sport = Category.objects.create(category_name='Sport')
+    cat_science = Category.objects.create(category_name='Science')
+    cat_business = Category.objects.create(category_name='Business')
+
+4) Добавить 2 статьи и 1 новость.
+
+    from app.models import Post
+    news1 = Post()
+    news1.post_header = 'Header of news # 1'
+    news1.post_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    news1.author = aut1
+    news1.save()
+
+    art1 = Post()
+    art1.post_header = 'Header of article # 1'
+    art1.post_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    art1.author = aut1
+    art1.post_type = 'a'
+    art1.save()
+
+    news2 = Post()
+    news2.post_header = 'Header of news # 2'
+    news2.post_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    news2.author = aut2
+    news2.save()
+
+5) Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий).
+
+    from app.models import PostCategory
+    news1.category.set([cat_news, cat_sport])
+    news1.save()
+    news2.category.set([cat_news, cat_science])
+    news2.save()
+    art1.category.set([cat_science, cat_business])
+    art1.save()
+
+6) Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+
+    from app.models import Comment
+    com1 = Comment()
+    com1.comment_text = 'Text of comment # 1'
+    com1.post = news1
+    com1.user = user1
+    com1.save()
+
+    com2 = Comment()
+    com2.comment_text = 'Text of comment # 2'
+    com2.post = news2
+    com2.user = user2
+    com2.save()
+
+    com3 = Comment()
+    com3.comment_text = 'Text of comment #3'
+    com3.post = art1
+    com3.user = user3
+    com3.save()
+
+    com4 = Comment()
+    com4.comment_text = 'Text of comment # 4'
+    com4.post = art1
+    com4.user = user4
+    com4.save()
+
+7) Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+
+    com1.like()
+    com1.like()
+    com1.like()
+    com2.dislike()
+    com3.dislike()
+    com3.dislike()
+    com3.dislike()
+    com3.dislike()
+    com3.dislike()
+    com4.like()
+    news1.dislike()
+    news2.like()
+    news2.like()
+    news2.like()
+    art1.dislike()
+    art1.dislike()
+
+8) Обновить рейтинги пользователей.
+
+    aut1.update_rating()
+    aut2.update_rating()
+
+9) Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+
+    best_id = Author.objects.all().order_by('-author_rating').values('user_id')[0]['user_id']
+    User.objects.get(id=best_id)
+    Author.objects.all().order_by('-author_rating').values('author_rating')[0]
+
+10) Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+
+    best_post = Post.objects.all().order_by('-post_rating').values()[0]
+    best_post['post_datetime']
+    User.objects.get(author__id=best_post['author_id'])
+    best_post['post_rating']
+    best_post['post_header']
+    Post.objects.get(id=best_post['id']).preview()
+
+11) Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+    Comment.objects.filter(post_id = best_post['id']).values('comment_datetime', 'user_id', 'comment_rating', 'comment_text')
+
