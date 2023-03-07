@@ -33,6 +33,11 @@ class Post(models.Model):  # модель содержит в себе стат�
     author = models.ForeignKey(Author, on_delete=models.CASCADE)  # связь «один ко многим» с моделью Author;
     category = models.ManyToManyField(Category, through='PostCategory')  # связь «многие ко многим» с моделью Category (с дополнительной моделью PostCategory);
 
+    def __str__(self) -> str:
+        return f'{self.post_datetime}' \
+        f'{self.post_header}' \
+        f'{self.post_text}'
+
     def like(self) -> int:  # увеличивает рейтинг на единицу.
         self.post_rating += 1
         self.save()
