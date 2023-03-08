@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 
 class Author(models.Model):  # Модель, содержащая объекты всех авторов.
@@ -17,6 +18,9 @@ class Author(models.Model):  # Модель, содержащая объекты
 
 class Category(models.Model):  # Категории новостей/статей — темы, которые они отражают (спорт, политика, образование и т. д.).
     category_name = models.CharField(max_length=64, unique=True)  #  Название категории
+
+    def __str__(self) -> str:
+        return self.category_name
 
 
 news = 'n'
@@ -50,6 +54,9 @@ class Post(models.Model):  # модель содержит в себе стат�
         if len(self.post_text) <= 127:
             return self.post_text
         return f'{self.post_text[:124]}...'
+    
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):  # Промежуточная модель для связи «многие ко многим»
