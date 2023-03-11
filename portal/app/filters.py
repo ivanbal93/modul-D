@@ -8,7 +8,7 @@ class NewsFilter(FilterSet):
         field_name = 'category__category_name',
         queryset = Category.objects.all(),
         label = 'Category',
-        empty_label = None
+        empty_label = ''
     )
 
     class Meta:
